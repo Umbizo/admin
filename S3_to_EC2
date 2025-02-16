@@ -1,0 +1,10 @@
+#Pull files from AWS S3 bucket to EC2 instance
+
+sudo apt update && sudo snap install aws-cli --classic
+aws configure
+
+#will prompt for AWS access key, region etc.
+#Set up an IAM user, go to security tab and set up an access key
+#Assign IAM user all S3 permissions
+
+aws s3 cp s3://umbizo /srv/shiny-server/EHR_to_EDC_App --recursive #copy whole of bucket across to app folder
