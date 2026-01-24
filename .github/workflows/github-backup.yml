@@ -23,7 +23,7 @@ jobs:
 
       - name: Backup all repos to S3
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT1 }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
         run: |
           set -e
