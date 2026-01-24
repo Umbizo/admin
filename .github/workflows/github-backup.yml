@@ -18,7 +18,7 @@ jobs:
       - name: Configure AWS with IAM Role
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/Umbizo123
+          role-to-assume: arn:aws:iam::651706770807:role/GithubBackup:aws:iam::651706770807:role/GithubBackup
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Backup all repos to S3
