@@ -1,0 +1,48 @@
+name: Backup GitHub to S3
+
+on:
+  schedule:
+    - cron: "0 3 * * *"   # daily
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq zip
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Backup repositories
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+        run: |
+          set -e
+
+          mkdir repos
+          cd repos
+
+          curl -s -H "Authorization: token $GH_TOKEN" \
+            "https://api.github.com/user/repos?per_page=200" \
+            | jq -r '.[].clone_url' \
+            | while read repo; do
+                name=$(basename "$repo" .git)
+                echo "Backing up $name"
+
+                git clone --mirror "$repo"
+                zip -r "$name.zip" "$name.git"
+                aws s3 cp "$name.zip" \
+                  "s3://$S3_BUCKET/$(date +%F)/$name.zip"
+
+                rm -rf "$name.git" "$name.zip"
+              done
