@@ -1,0 +1,13 @@
+#To upload a container to our registry at https://github.com/orgs/umbizo/packages
+
+#open docker desktop then:
+docker login ghcr.io
+#tag your package
+docker tag envita-delivery-pipeline1-DA ghcr.io/umbizo/envita-delivery-pipeline1-da:1.0
+#push your container
+docker push ghcr.io/umbizo/envita-delivery-pipeline1-da:1.0
+
+#pull the container into AWS 
+docker pull ghcr.io/umbizo/envita-delivery-pipeline1-da:1.0
+#run the container
+docker run ghcr.io/umbizo/envita-delivery-pipeline1-da:1.0
